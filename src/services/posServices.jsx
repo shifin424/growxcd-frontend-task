@@ -8,3 +8,7 @@ export const addProductApi = (data) => {
         },
     });
 };
+
+export const getProductsApi = () => {
+    return axios.get("/get-products")
+}

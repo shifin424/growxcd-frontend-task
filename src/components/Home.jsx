@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "./InputFeild";
 import { IoIosSearch } from "react-icons/io";
 import { FaCirclePlus } from "react-icons/fa6";
@@ -8,10 +8,16 @@ import Card from "./Card";
 import productImage from "../assets/images/product.avif";
 import OrderDetails from "./OrderDetails";
 import AddProduct from "./AddProduct";
+import { useDispatch, useSelector } from "react-redux";
+import { getProducts } from "../app/slices/productSlice";
 
 const Home = () => {
     const [showOrderDetails, setShowOrderDetails] = useState(false);
     const [showAddProduct, setShowAddProduct] = useState(false);
+
+    const dispatch = useDispatch()
+    const products = useSelector((state)=> state?.Product?.productData)
+    console.log(products);
 
     const handleOrderDetailsClick = () => {
         setShowOrderDetails(true);
@@ -23,72 +29,10 @@ const Home = () => {
         setShowOrderDetails(false);
     };
 
-    const cardData = [
-        {
-            id: 1,
-            title: "Product daf adfaadfa  adfa  adfadfa f sfgsfgsfgdsfadfadfadfadfadf ",
-            image: productImage,
-            price: 200,
-            offerType: "Discount",
-            content: "this product is awsome and very tasy and juiscy.",
-        },
-        {
-            id: 2,
-            title: "Product 2",
-            image: productImage,
-            price: 150,
-            offerType: "Flat Amount",
-            content: "Card 2 Content",
-        },
-        {
-            id: 3,
-            title: "Product 2",
-            image: productImage,
-            price: 200,
-            offerType: "Flat Amount",
-            content: "Card 2 Content",
-        },
-        {
-            id: 4,
-            title: "Product 2",
-            image: productImage,
-            price: 150,
-            offerType: "Flat Amount",
-            content: "Card 2 Content",
-        },
-        {
-            id: 5,
-            title: "Product daf adfaadfa  adfa  adfadfa f sfgsfgsfgdsfadfadfadfadfadf ",
-            image: productImage,
-            price: 200,
-            offerType: "Discount",
-            content: "this product is awsome and very tasy and juiscy.",
-        },
-        {
-            id: 6,
-            title: "Product 2",
-            image: productImage,
-            price: 150,
-            offerType: "Flat Amount",
-            content: "Card 2 Content",
-        },
-        {
-            id: 7,
-            title: "Product 2",
-            image: productImage,
-            price: 200,
-            offerType: "Flat Amount",
-            content: "Card 2 Content",
-        },
-        {
-            id: 8,
-            title: "Product 2",
-            image: productImage,
-            price: 150,
-            offerType: "Flat Amount",
-            content: "Card 2 Content",
-        },
-    ];
+    useEffect(() => {
+        dispatch(getProducts())
+    }, [dispatch])
+
     return (
         <div className="w-full h-screen flex">
             <div className="bg-[#f8f8f8] w-full md:w-[70%] lg:w-[70%]  px-4 md:px-8 lg:px-14 pt-4 md:pt-8">
@@ -144,7 +88,7 @@ const Home = () => {
                 </div>
 
                 <div className="mt-10">
-                    <Card cardData={cardData} />
+                    <Card cardData={products} />
                 </div>
             </div>
 

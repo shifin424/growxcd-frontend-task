@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "./InputFeild";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import Button from "./Button";
 import { productValidationSchema } from "../schema/productValidation";
-import { useDispatch } from "react-redux";
-import { addProducts } from "../app/slices/productSlice";
-import { errorMessage } from "../hooks/message";
+import { useDispatch, useSelector } from "react-redux";
+import { addProducts, getProducts } from "../app/slices/productSlice";
+import { errorMessage, successMessage } from "../hooks/message";
+
 
 const AddProduct = () => {
 
@@ -16,6 +17,23 @@ const AddProduct = () => {
     const [productImage, setProductImage] = useState(null);
 
     const dispatch = useDispatch()
+    const { isLoading, isSuccess, isError, message, error } = useSelector((state) => state?.Product)
+    const products = useSelector((state) => state?.Product?.productData)
+    const resetForm = useFormikContext();
+    console.log("line 23", products);
+
+    useEffect(() => {
+        if (isError) {
+            errorMessage(error);
+        }
+        if (isSuccess) {
+            successMessage(message);
+        }
+    }, [isError, message, error, dispatch, isSuccess]);
+
+    useEffect(() => {
+        dispatch(getProducts())
+    }, [dispatch])
 
 
     const handleDiscountAmountChange = (e) => {
@@ -49,58 +67,66 @@ const AddProduct = () => {
 
     const handleSubmit = (values) => {
         const formData = new FormData();
-    
+
         if (productImage === null) {
             errorMessage("Please select a product image");
             return;
         }
-    
+
         Object.keys(values).forEach((key) => {
             formData.append(key, values[key]);
         });
-    
+
         formData.append("image", productImage);
-    
+
         switch (values.offerType) {
-            case "AMOUNT":
+            case "No Offer":
+                break;
+            case "Amount":
                 if (!discountAmount) {
                     errorMessage("Please enter the discount amount for Flat Amount offer");
                     return;
                 }
                 formData.append("discountAmount", discountAmount);
                 break;
-    
-            case "Flat Percentage":
+
+            case "Percentage":
                 if (!discountPercentage) {
                     errorMessage("Please enter the discount percentage for Flat Percentage offer");
                     return;
                 }
                 formData.append("discountPercentage", discountPercentage);
                 break;
-    
-            case "Buy One Get One":
+
+            case "BuyOneGetOne":
                 if (!selectedProduct) {
                     errorMessage("Please select a product for Buy One Get One offer");
                     return;
                 }
                 formData.append("selectedProduct", selectedProduct);
-    
+
                 if (selectedProduct === "Different Product") {
                     formData.append("otherProduct", selectedDropdown);
-    
+
                     if (!selectedDropdown) {
                         errorMessage("Please select a product from the dropdown for Buy One Get One offer");
                         return;
                     }
                 }
                 break;
-    
+
             default:
                 break;
         }
-        dispatch(addProducts(formData));
+        dispatch(addProducts(formData))
+        setDiscountAmount("");
+        setDiscountPercentage("");
+        setSelectedProduct("");
+        setSelectedDropdown("");
+        setProductImage(null);;
+        resetForm();
     }
-    
+
 
     return (
         <div className="px-5 mt-10 pb-8">
@@ -193,20 +219,22 @@ const AddProduct = () => {
                     </div>
                     <div className="mb-4 ">
                         <label className="block text-sm font-medium text-gray-700">Offer Type</label>
-                        <div className="flex gap-x-2">
-                            <Field type="radio" name="offerType" value="Flat Amount" />
-                            Flat Amount
-                            <Field type="radio" name="offerType" value="Flat Percentage" />
-                            Flat Percentage
-                            <Field type="radio" name="offerType" value="Buy One Get One" />
+                        <div className="flex gap-x-1">
+                            <Field type="radio" name="offerType" value="Amount" />
+                            Amount
+                            <Field type="radio" name="offerType" value="Percentage" />
+                            Percentage
+                            <Field type="radio" name="offerType" value="BuyOneGetOne" />
                             Buy One Get One
+                            <Field type="radio" name="offerType" value="NoOffer" />
+                            No Offer
                         </div>
                         <ErrorMessage name="offerType" component="div" className="text-red-500" />
                     </div>
                     <Field name="offerType">
                         {({ field }) => (
                             <>
-                                {field.value.includes("Flat Amount") && (
+                                {field.value.includes("Amount") && (
                                     <div className="mb-4">
                                         <label htmlFor="discountAmount" className="block text-sm font-medium text-gray-700">
                                             Discount Amount
@@ -221,7 +249,7 @@ const AddProduct = () => {
                                         />
                                     </div>
                                 )}
-                                {field.value.includes("Flat Percentage") && (
+                                {field.value.includes("Percentage") && (
                                     <div className="mb-4">
                                         <label
                                             htmlFor="discountPercentage"
@@ -239,7 +267,7 @@ const AddProduct = () => {
                                         />
                                     </div>
                                 )}
-                                {field.value.includes("Buy One Get One") && (
+                                {field.value.includes("BuyOneGetOne") && (
                                     <div className="mb-4">
                                         <label className="block text-sm font-medium text-gray-700">Select Product</label>
                                         <div className="flex items-center">
@@ -277,8 +305,14 @@ const AddProduct = () => {
                                                             onChange={handleDropdownChange}
                                                             className="block w-full mt-1"
                                                         >
-                                                            <option value="product1">Product 1</option>
-                                                            <option value="product2">Product 2</option>
+                                                            <option value="" disabled>
+                                                                Select a product
+                                                            </option>
+                                                            {products.map((product) => (
+                                                                <option key={product._id} value={product._id}>
+                                                                    {product.productName}
+                                                                </option>
+                                                            ))}
                                                         </select>
                                                     </div>
                                                 </div>
@@ -295,6 +329,7 @@ const AddProduct = () => {
                             type="submit"
                             className="bg-[#f46600] text-white px-4 py-2 w-full rounded-md hover:bg-[#e85900]"
                             text="Add Product"
+                            loading={isLoading}
                         />
                     </div>
                 </Form>
