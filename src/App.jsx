@@ -4,7 +4,7 @@ import PosRoutes from "./routes/PosRoutes";
 
 function App() {
   return (
-    <div className="bg-[#E3E6E6]">
+    <div>
       <Router>
         <Routes>
           <Route path='/*' element={<PosRoutes />} />
