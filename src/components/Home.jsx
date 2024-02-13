@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import InputField from "./InputFeild";
 import { IoIosSearch } from "react-icons/io";
 import { FaCirclePlus } from "react-icons/fa6";
@@ -6,14 +6,29 @@ import { FaOpencart } from "react-icons/fa6";
 import Button from "./Button";
 import Card from "./Card";
 import productImage from "../assets/images/product.avif";
+import OrderDetails from "./OrderDetails";
+import AddProduct from "./AddProduct";
 
 const Home = () => {
+    const [showOrderDetails, setShowOrderDetails] = useState(false);
+    const [showAddProduct, setShowAddProduct] = useState(false);
+
+    const handleOrderDetailsClick = () => {
+        setShowOrderDetails(true);
+        setShowAddProduct(false);
+    };
+
+    const handleAddProductClick = () => {
+        setShowAddProduct(true);
+        setShowOrderDetails(false);
+    };
+
     const cardData = [
         {
             id: 1,
-            title: "Product 1",
+            title: "Product daf adfaadfa  adfa  adfadfa f sfgsfgsfgdsfadfadfadfadfadf ",
             image: productImage,
-            price: 20.99,
+            price: 200,
             offerType: "Discount",
             content: "this product is awsome and very tasy and juiscy.",
         },
@@ -21,23 +36,55 @@ const Home = () => {
             id: 2,
             title: "Product 2",
             image: productImage,
-            price: 15.49,
+            price: 150,
             offerType: "Flat Amount",
             content: "Card 2 Content",
         },
         {
-            id: 2,
+            id: 3,
             title: "Product 2",
             image: productImage,
-            price: 15.49,
+            price: 200,
             offerType: "Flat Amount",
             content: "Card 2 Content",
         },
         {
-            id: 2,
+            id: 4,
             title: "Product 2",
             image: productImage,
-            price: 15.49,
+            price: 150,
+            offerType: "Flat Amount",
+            content: "Card 2 Content",
+        },
+        {
+            id: 5,
+            title: "Product daf adfaadfa  adfa  adfadfa f sfgsfgsfgdsfadfadfadfadfadf ",
+            image: productImage,
+            price: 200,
+            offerType: "Discount",
+            content: "this product is awsome and very tasy and juiscy.",
+        },
+        {
+            id: 6,
+            title: "Product 2",
+            image: productImage,
+            price: 150,
+            offerType: "Flat Amount",
+            content: "Card 2 Content",
+        },
+        {
+            id: 7,
+            title: "Product 2",
+            image: productImage,
+            price: 200,
+            offerType: "Flat Amount",
+            content: "Card 2 Content",
+        },
+        {
+            id: 8,
+            title: "Product 2",
+            image: productImage,
+            price: 150,
             offerType: "Flat Amount",
             content: "Card 2 Content",
         },
@@ -52,7 +99,7 @@ const Home = () => {
                     </div>
                     <div className="h-28">
                         <div className="relative">
-                            <span className="absolute top-3 left-7 md:top-4 md:left-8 flex items-center">
+                            <span className="absolute top-3 left-3 md:top-4 md:left-4 flex items-center">
                                 <IoIosSearch className="text-black w-5 h-5 md:w-6 md:h-6" />
                             </span>
                             <InputField
@@ -101,8 +148,31 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className="hidden lg:block bg-green-100 w-[30%]">
-                <h1 className="text-xs md:text-sm lg:text-base">order div</h1>
+            <div className="hidden lg:block bg-white w-[30%]">
+                <div className="flex justify-center">
+                    <div className="flex justify-center mt-8 gap-x-2 w-96 h-14 p-2 bg-[#f8f8f8]">
+                        <Button
+                            className={`${
+                                showOrderDetails
+                                    ? "bg-[#f46600] text-white"
+                                    : "bg-white hover:bg-[#f46600] hover:text-white"
+                            } border text-black px-10 py-2 rounded`}
+                            text="Order Details"
+                            onClick={handleOrderDetailsClick}
+                        />
+                        <Button
+                            className={`${
+                                showAddProduct ? "bg-[#f46600] text-white" : "bg-white hover:bg-[#f46600] hover:text-white"
+                            } border text-black px-10 py-2 rounded`}
+                            text="Add Product"
+                            onClick={handleAddProductClick}
+                        />
+                    </div>
+                </div>
+                <div>
+                    {showOrderDetails && <OrderDetails />}
+                    {showAddProduct && <AddProduct />}
+                </div>
             </div>
         </div>
     );
