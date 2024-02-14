@@ -15,6 +15,7 @@ const Home = () => {
     const [showOrderDetails, setShowOrderDetails] = useState(false);
     const [showAddProduct, setShowAddProduct] = useState(false);
     const [selectedOfferType, setSelectedOfferType] = useState("All");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const dispatch = useDispatch();
     const products = useSelector((state) => state?.Product?.productData);
@@ -28,17 +29,23 @@ const Home = () => {
         dispatch(setSelectedOfferType(offerType));
     };
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
     const filteredProducts = products.filter((product) => {
-        if (selectedOfferType === "All") {
-            return true;
-        } else if (selectedOfferType === "Buy One Get One") {
-            return (
-                product.offers &&
-                (product.offers.offerType === "ByOneGetSame" || product.offers.offerType === "ByOneGetOther")
-            );
-        } else {
-            return product.offers.offerType === selectedOfferType;
-        }
+        const offerTypeCondition =
+            selectedOfferType === "All" ||
+            (selectedOfferType === "Buy One Get One" &&
+                (product.offers &&
+                    (product.offers.offerType === "ByOneGetSame" || product.offers.offerType === "ByOneGetOther"))) ||
+            product.offers.offerType === selectedOfferType;
+
+        const searchCondition =
+            product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+        return offerTypeCondition && searchCondition;
     });
 
     const handleAddProductClick = () => {
@@ -67,6 +74,7 @@ const Home = () => {
                                 className="pl-10 md:pl-12 rounded mt-2 pr-4 py-2 text-xs md:text-sm lg:text-base"
                                 type="text"
                                 placeholder="Search Product"
+                                onChange={handleSearchChange}
                             />
                         </div>
                         <div className="flex justify-end gap-5 mt-5 pr-3 md:hidden relative">
