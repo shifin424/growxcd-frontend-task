@@ -62,7 +62,6 @@ const AddProduct = ({ onClose }) => {
     };
 
     const handleSubmit = (values) => {
-
         const formData = new FormData();
 
         if (productImage === null) {
@@ -84,64 +83,70 @@ const AddProduct = ({ onClose }) => {
             formData.append(key, values[key]);
         });
 
-        formData.append("image", productImage);
+        try{
+            formData.append("image", productImage);
 
-        switch (values.offerType) {
-            case "No Offer":
-                break;
-            case "Amount":
-                if (!discountAmount) {
-                    errorMessage("Please enter the discount amount for Flat Amount offer");
-                    return;
-                }
-                formData.append("discountAmount", discountAmount);
-                break;
-
-            case "Percentage":
-                if (!discountPercentage) {
-                    errorMessage("Please enter the discount percentage for Flat Percentage offer");
-                    return;
-                }
-                formData.append("discountPercentage", discountPercentage);
-                break;
-
-            case "BuyOneGetOne":
-                if (!selectedProduct) {
-                    errorMessage("Please select a product for Buy One Get One offer");
-                    return;
-                }
-                formData.append("selectedProduct", selectedProduct);
-
-                if (selectedProduct === "Different Product") {
-                    formData.append("otherProduct", selectedDropdown);
-
-                    if (!selectedDropdown) {
-                        errorMessage("Please select a product from the dropdown for Buy One Get One offer");
+            switch (values.offerType) {
+                case "No Offer":
+                    break;
+                case "Amount":
+                    if (!discountAmount) {
+                        errorMessage("Please enter the discount amount for Flat Amount offer");
                         return;
                     }
-                }
-                break;
-
-            default:
-                break;
+                    formData.append("discountAmount", discountAmount);
+                    break;
+    
+                case "Percentage":
+                    if (!discountPercentage) {
+                        errorMessage("Please enter the discount percentage for Flat Percentage offer");
+                        return;
+                    }
+                    formData.append("discountPercentage", discountPercentage);
+                    break;
+    
+                case "BuyOneGetOne":
+                    if (!selectedProduct) {
+                        errorMessage("Please select a product for Buy One Get One offer");
+                        return;
+                    }
+                    formData.append("selectedProduct", selectedProduct);
+    
+                    if (selectedProduct === "Different Product") {
+                        formData.append("otherProduct", selectedDropdown);
+    
+                        if (!selectedDropdown) {
+                            errorMessage("Please select a product from the dropdown for Buy One Get One offer");
+                            return;
+                        }
+                    }
+                    break;
+    
+                default:
+                    break;
+            }
+    
+            dispatch(addProducts(formData));
+            resetForm({
+                values: {
+                    productName: "",
+                    productPrice: "",
+                    stock: "",
+                    description: "",
+                    offerType: "",
+                },
+            });
+            setDiscountAmount("");
+            setDiscountPercentage("");
+            setSelectedProduct("");
+            setSelectedDropdown("");
+            setProductImage(null);
+            onClose();
+        }catch(err){
+            console.log(err)
         }
-        onClose();
-        dispatch(addProducts(formData));
-        resetForm({
-            values: {
-                productName: "",
-                productPrice: "",
-                stock: "",
-                description: "",
-                offerType: "",
-            },
-        });
-        setDiscountAmount("");
-        setDiscountPercentage("");
-        setSelectedProduct("");
-        setSelectedDropdown("");
-        setProductImage(null);
 
+       
     };
 
     return (
