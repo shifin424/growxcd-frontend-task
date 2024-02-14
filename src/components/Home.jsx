@@ -5,7 +5,7 @@ import { FaCirclePlus } from "react-icons/fa6";
 import { FaOpencart } from "react-icons/fa6";
 import Button from "./Button";
 import Card from "./Card";
-import productImage from "../assets/images/product.avif";
+import productImage from "../assets/images/default.png";
 import OrderDetails from "./OrderDetails";
 import AddProduct from "./AddProduct";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,8 +16,9 @@ const Home = () => {
     const [showAddProduct, setShowAddProduct] = useState(false);
 
     const dispatch = useDispatch()
-    const products = useSelector((state)=> state?.Product?.productData)
-    console.log(products);
+    const products = useSelector((state) => state?.Product?.productData)
+    const order = useSelector((state) => state)
+    console.log("line 21", order);
 
     const handleOrderDetailsClick = () => {
         setShowOrderDetails(true);
@@ -34,7 +35,7 @@ const Home = () => {
     }, [dispatch])
 
     return (
-        <div className="w-full h-screen flex">
+        <div className="w-full h-auto pb-5 flex">
             <div className="bg-[#f8f8f8] w-full md:w-[70%] lg:w-[70%]  px-4 md:px-8 lg:px-14 pt-4 md:pt-8">
                 <div className="flex justify-between">
                     <div className="h-28">
@@ -96,18 +97,16 @@ const Home = () => {
                 <div className="flex justify-center">
                     <div className="flex justify-center mt-8 gap-x-2 w-96 h-14 p-2 bg-[#f8f8f8]">
                         <Button
-                            className={`${
-                                showOrderDetails
+                            className={`${showOrderDetails
                                     ? "bg-[#f46600] text-white"
                                     : "bg-white hover:bg-[#f46600] hover:text-white"
-                            } border text-black px-10 py-2 rounded`}
+                                } border text-black px-10 py-2 rounded`}
                             text="Order Details"
                             onClick={handleOrderDetailsClick}
                         />
                         <Button
-                            className={`${
-                                showAddProduct ? "bg-[#f46600] text-white" : "bg-white hover:bg-[#f46600] hover:text-white"
-                            } border text-black px-10 py-2 rounded`}
+                            className={`${showAddProduct ? "bg-[#f46600] text-white" : "bg-white hover:bg-[#f46600] hover:text-white"
+                                } border text-black px-10 py-2 rounded`}
                             text="Add Product"
                             onClick={handleAddProductClick}
                         />
@@ -116,8 +115,14 @@ const Home = () => {
                 <div>
                     {showOrderDetails && <OrderDetails />}
                     {showAddProduct && <AddProduct />}
+                    {!showOrderDetails && !showAddProduct && (
+                        <div className="flex justify-center flex-col p-5 items-center">
+                            <img src={productImage} className="w-full" alt="Default Image" />
+                        </div>
+                    )}
                 </div>
             </div>
+
         </div>
     );
 };

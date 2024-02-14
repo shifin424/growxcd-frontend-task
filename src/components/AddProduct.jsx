@@ -26,7 +26,7 @@ const AddProduct = () => {
         if (isError) {
             errorMessage(error);
         }
-        if (isSuccess) {
+        if (isSuccess && message) {
             successMessage(message);
         }
     }, [isError, message, error, dispatch, isSuccess]);
@@ -70,6 +70,16 @@ const AddProduct = () => {
 
         if (productImage === null) {
             errorMessage("Please select a product image");
+            return;
+        }
+
+        if  (values.offerType === "Amount" && discountAmount <= 0 || discountAmount > Number(values.productPrice)) {
+            errorMessage("Discount amount should be greater than zero and less than the product price");
+            return;
+        }
+
+        if (values.offerType === "Percentage" &&discountPercentage <= 0 || discountPercentage > 100) {
+            errorMessage("Discount percentage should be between 0 and 100.");
             return;
         }
 
@@ -141,7 +151,7 @@ const AddProduct = () => {
                             name="productName"
                             className="border mt-2 border-gray-500 pl-3 w-full h-10 rounded"
                             type="text"
-                            placeholder="eg: Burger"
+                            placeholder="Enter product Name"
                         />
                         <div>
                             <ErrorMessage name="productName" component="div" className="text-red-500" />
