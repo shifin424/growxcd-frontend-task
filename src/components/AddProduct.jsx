@@ -83,7 +83,7 @@ const AddProduct = ({ onClose }) => {
             formData.append(key, values[key]);
         });
 
-        try{
+        try {
             formData.append("image", productImage);
 
             switch (values.offerType) {
@@ -96,7 +96,7 @@ const AddProduct = ({ onClose }) => {
                     }
                     formData.append("discountAmount", discountAmount);
                     break;
-    
+
                 case "Percentage":
                     if (!discountPercentage) {
                         errorMessage("Please enter the discount percentage for Flat Percentage offer");
@@ -104,28 +104,28 @@ const AddProduct = ({ onClose }) => {
                     }
                     formData.append("discountPercentage", discountPercentage);
                     break;
-    
+
                 case "BuyOneGetOne":
                     if (!selectedProduct) {
                         errorMessage("Please select a product for Buy One Get One offer");
                         return;
                     }
                     formData.append("selectedProduct", selectedProduct);
-    
+
                     if (selectedProduct === "Different Product") {
                         formData.append("otherProduct", selectedDropdown);
-    
+
                         if (!selectedDropdown) {
                             errorMessage("Please select a product from the dropdown for Buy One Get One offer");
                             return;
                         }
                     }
                     break;
-    
+
                 default:
                     break;
             }
-    
+
             dispatch(addProducts(formData));
             resetForm({
                 values: {
@@ -142,11 +142,11 @@ const AddProduct = ({ onClose }) => {
             setSelectedDropdown("");
             setProductImage(null);
             onClose();
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
 
-       
+
     };
 
     return (

@@ -6,7 +6,7 @@ import { decrementCartItem, incrementCartItem } from "../app/slices/orderSlice";
 import useSwal from "../hooks/useSwal";
 
 const OrderDetails = ({onclose}) => {
-    const cart = useSelector((state) => state?.Order.cartData);    
+    const cart = useSelector((state) => state?.Order?.cartData);    
 
     const dispatch = useDispatch();
     const { showSuccess, showError ,showWarning} = useSwal();
@@ -21,13 +21,13 @@ const OrderDetails = ({onclose}) => {
 
     const handleSubmit = () => {
         try {
-            onclose()
-            if(cart.length === 0){
+            if(cart?.length === 0){
                 showWarning("Please add Products")
             }else{
                 showSuccess("Order Placed Successfully");
             }
         } catch (err) {
+            console.log(err)
             showError("Order Failed");
         }
     };

@@ -22,7 +22,7 @@ const Home = () => {
 
     const dispatch = useDispatch();
     const products = useSelector((state) => state?.Product?.productData);
-    const { totalItems } = useSelector((state) => state.Order);
+    const { totalItems } = useSelector((state) => state?.Order);
 
     const handleOrderDetailsClick = () => {
         setShowOrderDetails(true);
