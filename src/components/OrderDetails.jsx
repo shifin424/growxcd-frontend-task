@@ -6,10 +6,10 @@ import { decrementCartItem, incrementCartItem } from "../app/slices/orderSlice";
 import useSwal from "../hooks/useSwal";
 
 const OrderDetails = () => {
-    const dispatch = useDispatch();
     const cart = useSelector((state) => state?.Order.cartData);
-    const { showSuccess ,showError } = useSwal()
 
+    const dispatch = useDispatch();
+    const { showSuccess, showError } = useSwal();
 
     const handleDecrement = (productId) => {
         dispatch(decrementCartItem({ productId }));
@@ -20,19 +20,18 @@ const OrderDetails = () => {
     };
 
     const handleSubmit = () => {
-        try{
-            showSuccess("Order Placed Successfully")
-        }catch(err){
-            showError("Order Failed")
+        try {
+            showSuccess("Order Placed Successfully");
+        } catch (err) {
+            showError("Order Failed");
         }
-      
-    }
+    };
 
     const totalPrice = cart.reduce((acc, product) => {
         const productPrice = product.productPrice * (product.quantity || 1);
-        if (product.offers && product.offers.offerType === 'Amount') {
+        if (product.offers && product.offers.offerType === "Amount") {
             return acc + (productPrice - product.offers.flatAmount);
-        } else if (product.offers && product.offers.offerType === 'Percentage') {
+        } else if (product.offers && product.offers.offerType === "Percentage") {
             const discount = (productPrice * product.offers.flatPercentage) / 100;
             return acc + (productPrice - discount);
         } else {
@@ -73,10 +72,10 @@ const OrderDetails = () => {
                         {product.offers && (
                             <p>
                                 {product.offers.offerType === "Amount" && (
-                                    <span className="text-sm">Available Offer : ₹{product.offers.flatAmount}</span>
+                                    <span className="text-sm">Offer : ₹{product.offers.flatAmount}</span>
                                 )}
                                 {product.offers.offerType === "Percentage" && (
-                                    <span className="text-sm">Available Offer : {product.offers.flatPercentage}%</span>
+                                    <span className="text-sm"> Offer : {product.offers.flatPercentage}%</span>
                                 )}
                                 {product.offers.offerType === "ByOneGetSame" && (
                                     <span className="text-sm">Offer : {product.productName}</span>
@@ -99,6 +98,7 @@ const OrderDetails = () => {
                     </div>
                 </div>
             ))}
+
             <div className="flex justify-center p-5">
                 <div className="bg-gray-100 w-full p-3 rounded">
                     <h1 className="text-2xl font-bold mb-4 ">Order Details</h1>
@@ -125,7 +125,11 @@ const OrderDetails = () => {
                 </div>
             </div>
             <div className="flex justify-center p-5">
-                <Button onClick={handleSubmit}  className="bg-[#f46600] w-full h-10 rounded text-white font-bold" text="Order Now" />
+                <Button
+                    onClick={handleSubmit}
+                    className="bg-[#f46600] w-full h-10 rounded text-white font-bold"
+                    text="Order Now"
+                />
             </div>
         </div>
     );

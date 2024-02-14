@@ -19,8 +19,8 @@ const AddProduct = () => {
     const dispatch = useDispatch()
     const { isLoading, isSuccess, isError, message, error } = useSelector((state) => state?.Product)
     const products = useSelector((state) => state?.Product?.productData)
+
     const resetForm = useFormikContext();
-    console.log("line 23", products);
 
     useEffect(() => {
         if (isError) {
@@ -129,12 +129,20 @@ const AddProduct = () => {
                 break;
         }
         dispatch(addProducts(formData))
+        resetForm({
+            values: {
+                productName: "",
+                productPrice: "",
+                stock: "",
+                description: "",
+                offerType: "",
+            },
+        });
         setDiscountAmount("");
         setDiscountPercentage("");
         setSelectedProduct("");
         setSelectedDropdown("");
-        setProductImage(null);;
-        resetForm();
+        setProductImage(null);
     }
 
 

@@ -14,16 +14,32 @@ import { getProducts } from "../app/slices/productSlice";
 const Home = () => {
     const [showOrderDetails, setShowOrderDetails] = useState(false);
     const [showAddProduct, setShowAddProduct] = useState(false);
+    const [selectedOfferType, setSelectedOfferType] = useState("All");
 
-    const dispatch = useDispatch()
-    const products = useSelector((state) => state?.Product?.productData)
-    const order = useSelector((state) => state)
-    console.log("line 21", order);
+    const dispatch = useDispatch();
+    const products = useSelector((state) => state?.Product?.productData);
 
     const handleOrderDetailsClick = () => {
         setShowOrderDetails(true);
         setShowAddProduct(false);
     };
+
+    const handleOfferTypeClick = (offerType) => {
+        dispatch(setSelectedOfferType(offerType));
+    };
+
+    const filteredProducts = products.filter((product) => {
+        if (selectedOfferType === "All") {
+            return true;
+        } else if (selectedOfferType === "Buy One Get One") {
+            return (
+                product.offers &&
+                (product.offers.offerType === "ByOneGetSame" || product.offers.offerType === "ByOneGetOther")
+            );
+        } else {
+            return product.offers.offerType === selectedOfferType;
+        }
+    });
 
     const handleAddProductClick = () => {
         setShowAddProduct(true);
@@ -31,8 +47,8 @@ const Home = () => {
     };
 
     useEffect(() => {
-        dispatch(getProducts())
-    }, [dispatch])
+        dispatch(getProducts());
+    }, [dispatch]);
 
     return (
         <div className="w-full h-auto pb-5 flex">
@@ -56,7 +72,8 @@ const Home = () => {
                         <div className="flex justify-end gap-5 mt-5 pr-3 md:hidden relative">
                             <div>
                                 <FaOpencart className="w-8 h-8" />
-                                <span className="bg-red-500 text-white rounded-full px-2 py-1 text-xs -top-1 right-12 absolute">
+                                <span className="bg-red-500 text-white rounded-full px-2 py-1 text-xs -top-1 
+                                right-12 absolute">
                                     1
                                 </span>
                             </div>
@@ -67,29 +84,41 @@ const Home = () => {
 
                 <div className="flex flex-row gap-x-5 mt-5 md:mt-0">
                     <Button
-                        className="md:px-5 px-3  py-1 md:py-2 bg-white hover:bg-[#f46600]
-                         hover:text-white rounded-md text-sm md:font-semibold"
+                        className={`${selectedOfferType === "All"
+                            ? "bg-[#f46600] text-white"
+                            : "bg-white hover:bg-[#f46600] hover:text-white"
+                            } md:px-5 px-3 py-1 md:py-2 rounded-md text-sm md:font-semibold`}
                         text="All"
+                        onClick={() => handleOfferTypeClick("All")}
                     />
                     <Button
-                        className="md:px-5 px-3  py-1 md:py-2 bg-white hover:bg-[#f46600]
-                         hover:text-white  rounded-md text-sm md:font-semibold"
+                        className={`${selectedOfferType === "Amount"
+                            ? "bg-[#f46600] text-white"
+                            : "bg-white hover:bg-[#f46600] hover:text-white"
+                            } md:px-5 px-3 py-1 md:py-2 rounded-md text-sm md:font-semibold`}
                         text="Flat Amount"
+                        onClick={() => handleOfferTypeClick("Amount")}
                     />
                     <Button
-                        className="md:px-5 px-3  py-1 md:py-2 bg-white hover:bg-[#f46600]
-                         hover:text-white  rounded-md text-sm md:font-semibold"
+                        className={`${selectedOfferType === "Percentage"
+                            ? "bg-[#f46600] text-white"
+                            : "bg-white hover:bg-[#f46600] hover:text-white"
+                            } md:px-5 px-3 py-1 md:py-2 rounded-md text-sm md:font-semibold`}
                         text="Flat Discount"
+                        onClick={() => handleOfferTypeClick("Percentage")}
                     />
                     <Button
-                        className="md:px-5 px-3  py-1 md:py-2 bg-white hover:bg-[#f46600]
-                         hover:text-white  rounded-md text-sm md:font-semibold"
-                        text="Buy One get One "
+                        className={`${selectedOfferType === "BuyOneGetOneSame" || selectedOfferType === "BuyOneGetOneAnother"
+                            ? "bg-[#f46600] text-white"
+                            : "bg-white hover:bg-[#f46600] hover:text-white"
+                            } md:px-5 px-3 py-1 md:py-2 rounded-md text-sm md:font-semibold`}
+                        text="Buy One Get One"
+                        onClick={() => handleOfferTypeClick("Buy One Get One")}
                     />
                 </div>
 
                 <div className="mt-10">
-                    <Card cardData={products} />
+                    <Card cardData={filteredProducts} />
                 </div>
             </div>
 
@@ -98,14 +127,15 @@ const Home = () => {
                     <div className="flex justify-center mt-8 gap-x-2 w-96 h-14 p-2 bg-[#f8f8f8]">
                         <Button
                             className={`${showOrderDetails
-                                    ? "bg-[#f46600] text-white"
-                                    : "bg-white hover:bg-[#f46600] hover:text-white"
+                                ? "bg-[#f46600] text-white"
+                                : "bg-white hover:bg-[#f46600] hover:text-white"
                                 } border text-black px-10 py-2 rounded`}
                             text="Order Details"
                             onClick={handleOrderDetailsClick}
                         />
                         <Button
-                            className={`${showAddProduct ? "bg-[#f46600] text-white" : "bg-white hover:bg-[#f46600] hover:text-white"
+                            className={`${showAddProduct ? "bg-[#f46600] text-white"
+                                : "bg-white hover:bg-[#f46600] hover:text-white"
                                 } border text-black px-10 py-2 rounded`}
                             text="Add Product"
                             onClick={handleAddProductClick}
@@ -122,7 +152,6 @@ const Home = () => {
                     )}
                 </div>
             </div>
-
         </div>
     );
 };

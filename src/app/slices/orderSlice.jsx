@@ -3,11 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
     orderData: [],
     cartData: [],
+    selectedOfferType: "All",
     isLoading: false,
     isSuccess: false,
     isError: false,
     message: '',
     error: '',
+
 };
 
 export const addToCartSlice = createSlice({
@@ -39,7 +41,10 @@ export const addToCartSlice = createSlice({
                 state.isSuccess = true;
             }
         },
+        setSelectedOfferType: (state, action) => {
+            state.selectedOfferType = action.payload;
+        },
     },
 });
 
-export const { addToCart, incrementCartItem, decrementCartItem } = addToCartSlice.actions;
+export const { addToCart, incrementCartItem,setSelectedOfferType , decrementCartItem } = addToCartSlice.actions;
