@@ -1,30 +1,29 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     orderData: [],
     cartData: [],
     selectedOfferType: "All",
+    totalItems: 0,
     isLoading: false,
     isSuccess: false,
     isError: false,
-    message: '',
-    error: '',
-
+    message: "",
+    error: "",
 };
 
 export const addToCartSlice = createSlice({
-    name: 'cartData',
+    name: "cartData",
     initialState,
     reducers: {
         addToCart: (state, action) => {
-            const newProduct = { ...action.payload, quantity: 1 }
+            const newProduct = { ...action.payload, quantity: 1 };
             state.cartData = [...state.cartData, newProduct];
             state.isSuccess = true;
         },
         incrementCartItem: (state, action) => {
-            console.log("in line 22 increment", action)
             const { productId } = action.payload;
-            const itemIndex = state.cartData.findIndex(item => item._id === productId);
+            const itemIndex = state.cartData.findIndex((item) => item._id === productId);
             if (itemIndex !== -1) {
                 state.cartData[itemIndex].quantity += 1;
                 state.isSuccess = true;
@@ -32,7 +31,7 @@ export const addToCartSlice = createSlice({
         },
         decrementCartItem: (state, action) => {
             const { productId } = action.payload;
-            const itemIndex = state.cartData.findIndex(item => item._id === productId);
+            const itemIndex = state.cartData.findIndex((item) => item._id === productId);
             if (itemIndex !== -1) {
                 state.cartData[itemIndex].quantity -= 1;
                 if (state.cartData[itemIndex].quantity === 0) {
@@ -44,7 +43,11 @@ export const addToCartSlice = createSlice({
         setSelectedOfferType: (state, action) => {
             state.selectedOfferType = action.payload;
         },
+        updateTotalItems: (state) => {
+            state.totalItems = state.cartData.reduce((total, product) => total + product.quantity, 0);
+        },
     },
 });
 
-export const { addToCart, incrementCartItem,setSelectedOfferType , decrementCartItem } = addToCartSlice.actions;
+export const { addToCart, incrementCartItem, setSelectedOfferType, decrementCartItem, updateTotalItems } =
+    addToCartSlice.actions;

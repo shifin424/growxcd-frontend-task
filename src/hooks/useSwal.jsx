@@ -42,10 +42,24 @@ const useSwal = () => {
     });
   };
 
+  const showWarning = (message) => {
+    return Swal.fire({
+      icon: 'warning',
+      title: 'Warning',
+      text: message,
+      confirmButtonText: 'OK',
+      customClass: {
+        confirmButton: 'swal2-button',
+        cancelButton: 'swal2-button',
+      },
+    });
+  };
+
   return {
     showError,
     showSuccess,
     showInfo,
+    showWarning
   };
 };
 

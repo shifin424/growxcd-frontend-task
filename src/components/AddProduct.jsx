@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import InputField from "./InputFeild";
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from "formik";
 import Button from "./Button";
 import { productValidationSchema } from "../schema/productValidation";
@@ -7,18 +6,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { addProducts, getProducts } from "../app/slices/productSlice";
 import { errorMessage, successMessage } from "../hooks/message";
 
-
-const AddProduct = () => {
-
+const AddProduct = ({ onClose }) => {
     const [discountAmount, setDiscountAmount] = useState("");
     const [discountPercentage, setDiscountPercentage] = useState("");
     const [selectedProduct, setSelectedProduct] = useState("");
-    const [selectedDropdown, setSelectedDropdown] = useState("")
+    const [selectedDropdown, setSelectedDropdown] = useState("");
     const [productImage, setProductImage] = useState(null);
 
-    const dispatch = useDispatch()
-    const { isLoading, isSuccess, isError, message, error } = useSelector((state) => state?.Product)
-    const products = useSelector((state) => state?.Product?.productData)
+    const dispatch = useDispatch();
+    const { isLoading, isSuccess, isError, message, error } = useSelector((state) => state?.Product);
+    const products = useSelector((state) => state?.Product?.productData);
 
     const resetForm = useFormikContext();
 
@@ -32,9 +29,8 @@ const AddProduct = () => {
     }, [isError, message, error, dispatch, isSuccess]);
 
     useEffect(() => {
-        dispatch(getProducts())
-    }, [dispatch])
-
+        dispatch(getProducts());
+    }, [dispatch]);
 
     const handleDiscountAmountChange = (e) => {
         setDiscountAmount(e.target.value);
@@ -54,8 +50,8 @@ const AddProduct = () => {
     };
 
     const handleDropdownChange = (e) => {
-        setSelectedDropdown(e.target.value)
-    }
+        setSelectedDropdown(e.target.value);
+    };
 
     const initialValues = {
         productName: "",
@@ -66,6 +62,7 @@ const AddProduct = () => {
     };
 
     const handleSubmit = (values) => {
+
         const formData = new FormData();
 
         if (productImage === null) {
@@ -73,12 +70,12 @@ const AddProduct = () => {
             return;
         }
 
-        if  (values.offerType === "Amount" && discountAmount <= 0 || discountAmount > Number(values.productPrice)) {
+        if ((values.offerType === "Amount" && discountAmount <= 0) || discountAmount > Number(values.productPrice)) {
             errorMessage("Discount amount should be greater than zero and less than the product price");
             return;
         }
 
-        if (values.offerType === "Percentage" &&discountPercentage <= 0 || discountPercentage > 100) {
+        if ((values.offerType === "Percentage" && discountPercentage <= 0) || discountPercentage > 100) {
             errorMessage("Discount percentage should be between 0 and 100.");
             return;
         }
@@ -128,7 +125,8 @@ const AddProduct = () => {
             default:
                 break;
         }
-        dispatch(addProducts(formData))
+        onClose();
+        dispatch(addProducts(formData));
         resetForm({
             values: {
                 productName: "",
@@ -143,8 +141,8 @@ const AddProduct = () => {
         setSelectedProduct("");
         setSelectedDropdown("");
         setProductImage(null);
-    }
 
+    };
 
     return (
         <div className="px-5 mt-10 pb-8">

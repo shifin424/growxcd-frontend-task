@@ -5,11 +5,11 @@ import Button from "./Button";
 import { decrementCartItem, incrementCartItem } from "../app/slices/orderSlice";
 import useSwal from "../hooks/useSwal";
 
-const OrderDetails = () => {
-    const cart = useSelector((state) => state?.Order.cartData);
+const OrderDetails = ({onclose}) => {
+    const cart = useSelector((state) => state?.Order.cartData);    
 
     const dispatch = useDispatch();
-    const { showSuccess, showError } = useSwal();
+    const { showSuccess, showError ,showWarning} = useSwal();
 
     const handleDecrement = (productId) => {
         dispatch(decrementCartItem({ productId }));
@@ -21,7 +21,12 @@ const OrderDetails = () => {
 
     const handleSubmit = () => {
         try {
-            showSuccess("Order Placed Successfully");
+            onclose()
+            if(cart.length === 0){
+                showWarning("Please add Products")
+            }else{
+                showSuccess("Order Placed Successfully");
+            }
         } catch (err) {
             showError("Order Failed");
         }
